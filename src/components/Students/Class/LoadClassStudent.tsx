@@ -3,6 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
 import { useState } from "react";
 import ClassModal from "./Modal/ClassModal";
+
 export type classType = {
     classStudentId: string,
     classStudentName: string,
@@ -12,8 +13,9 @@ export type classType = {
 
 interface LoadClassStudentProps {
     data: classType[];
+    loadData: () => void;
 }
-const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data }) => {
+const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data, loadData }) => {
     const [open, setOpen] = useState<boolean>(false);
 
     const handleClickOpenForm = () => {
@@ -58,7 +60,7 @@ const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data }) => {
                     ))}
                 </tbody>
             </table>
-            <ClassModal open={open} handleClose={handleClose} />
+            <ClassModal open={open} handleClose={handleClose} loadData={loadData} />
         </>
     );
 }

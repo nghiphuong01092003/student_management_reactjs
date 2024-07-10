@@ -96,7 +96,7 @@ const ContentColumn1 = () => {
 
     const RenderTable = () => {
         if (type === 0) {
-            return <LoadClassStudent data={classStudentData} />
+            return <LoadClassStudent loadData={fetchClassStudentData} data={classStudentData} />
         } else if (type === 1) {
             return <Loadtudent data={studentData} />
         } else {

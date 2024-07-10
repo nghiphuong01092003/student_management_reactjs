@@ -47,7 +47,7 @@ const App: React.FC = () => {
         <div id="container">
           <ContentColumn1 />
         </div>
-        <FormContainer showForm={showForm} setShowForm={setShowForm} />
+        {/* <FormContainer showForm={showForm} setShowForm={setShowForm} /> */}
         <Footer />
       </div> </>
   )
