@@ -1,26 +1,60 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+// import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
+import Header from './components/Header';
+import NavigationBar from './components/NavigationBar';
+import ContentColumn1 from './components/ContentColumn1';
+import ContentColumn2 from './components/ContentColumn2';
+import FormContainer from './components/FormContainer';
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import 'react-toastify/dist/ReactToastify.css';
+
+interface ClassStudent {
+  id: string;
+  classStudentId: string;
+  classStudentName: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+const App: React.FC = () => {
+  // const [content, setContent] = useState<string>('');
+  const [showForm, setShowForm] = useState<boolean>(false);
+
+  // const loadContent = (content: string) => {
+  //   setContent(`Content for ${content}`);
+  //   setShowForm(true);
+  // };
+
+  return (
+    <>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <div id="main">
+        <Header />
+        <NavigationBar />
+        <div id="container">
+          <ContentColumn1 />
+        </div>
+        <FormContainer showForm={showForm} setShowForm={setShowForm} />
+        <Footer />
+      </div> </>
+  )
+};
+
+
+
+
 
 export default App;
