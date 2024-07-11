@@ -58,7 +58,7 @@ const ContentColumn1 = () => {
     }, [type]);
 
     const fetchClassStudentData = async () => {
-        fetch("https://localhost:44312/api/ClassStudent/get-ClassStudent")
+        await fetch("https://localhost:44312/api/ClassStudent/get-ClassStudent")
             .then(res => res.json())
             .then(data => {
                 if (data?.status) {

@@ -2,47 +2,95 @@ import { Close } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { classType } from '../LoadClassStudent';
+
+type classTypeProps = {
+    id: string | null,
+    classStudentId: string,
+    classStudentName: string
+}
 
 type ModalProps = {
     open: boolean,
     handleClose: () => void
     loadData: () => void
+    selectedClassStudent: classType | null
+    isNew: boolean
 }
 
-type classType = {
-    classStudentId: string,
-    classStudentName: string,
-}
 
-const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData }) => {
-    const [data, setData] = useState<classType>({
+
+const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData, selectedClassStudent, isNew }) => {
+    const [data, setData] = useState<classTypeProps>({
+        id: null,
         classStudentId: "",
         classStudentName: ""
     })
 
+
     useEffect(() => {
-        console.log(data);
-    }, [data])
+        if (selectedClassStudent !== null) {
+            console.log(selectedClassStudent);
+            setData((prev) => ({
+                ...prev,
+                id: selectedClassStudent.id,
+                classStudentId: selectedClassStudent.classStudentId,
+                classStudentName: selectedClassStudent.classStudentName,
+            }))
+        }
+    }, [selectedClassStudent])
+
+    const reset = () => {
+        setData({
+            id: null,
+            classStudentId: "",
+            classStudentName: ""
+        })
+    }
 
     const handleSave = async () => {
         try {
-            fetch("https://localhost:44312/api/ClassStudent/insert-ClassStudent", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status) {
-                        toast.success(data.message);
-                        loadData();
-                        handleClose()
-                    } else {
-                        toast.error(data.message);
-                    }
-                });
+            if (isNew) {
+                await fetch("https://localhost:44312/api/ClassStudent/insert-ClassStudent", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status) {
+                            toast.success(data.message);
+                            loadData();
+                            handleClose();
+                            reset();
+                        } else {
+                            toast.error(data.message);
+                        }
+                    });
+            } else {
+                await fetch("https://localhost:44312/api/ClassStudent/change-ClassStudent", {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status) {
+                            toast.success(data.message);
+                            loadData();
+                            handleClose();
+                            reset();
+                        } else {
+                            toast.error(data.message);
+                        }
+                    });
+            }
+
         } catch (error) {
             console.log(error);
         }
