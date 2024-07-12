@@ -2,58 +2,69 @@ import { Close } from '@mui/icons-material';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, TextField } from '@mui/material';
 import React, { FC, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { classType } from '../LoadClassStudent';
+import { studyStatusType } from '../LoadStudyStatus';
 
-type classTypeProps = {
+type StudyStatusType = {
     id: string | null,
-    classStudentId: string,
-    classStudentName: string
+    statusId: string,
+    statusName: string,
+    note?: string,
+    createdAt?: string,
+    updatedAt?: string
 }
 
-type ModalProps = {
+type StudyStatusProps = {
     open: boolean,
     handleClose: () => void
     loadData: () => void
-    selectedClassStudent: classType | null
+    selectedStudyStatus: studyStatusType | null
     isNew: boolean
 }
-
-const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData, selectedClassStudent, isNew }) => {
-    const [data, setData] = useState<classTypeProps>({
+const StudyStatusModal: FC<StudyStatusProps> = ({ open, handleClose, loadData, selectedStudyStatus, isNew }) => {
+    const [data, setData] = useState<StudyStatusType>({
         id: null,
-        classStudentId: "",
-        classStudentName: ""
+        statusId: "",
+        statusName: "",
+        note: "",
+        createdAt: "",
+        updatedAt: "",
     })
 
-
     useEffect(() => {
-        if (selectedClassStudent !== null) {
-            console.log(selectedClassStudent);
+        if (selectedStudyStatus !== null) {
+            console.log(selectedStudyStatus);
             setData((prev) => ({
                 ...prev,
-                id: selectedClassStudent.id,
-                classStudentId: selectedClassStudent.classStudentId,
-                classStudentName: selectedClassStudent.classStudentName,
+                id: selectedStudyStatus.id,
+                statusId: selectedStudyStatus.statusId,
+                statusName: selectedStudyStatus.statusName,
+                note: selectedStudyStatus.note
             }))
         }
-    }, [selectedClassStudent])
+    }, [selectedStudyStatus])
 
     const reset = () => {
         setData({
             id: null,
-            classStudentId: "",
-            classStudentName: ""
+            statusId: "",
+            statusName: "",
+            note: "",
+            createdAt: "",
+            updatedAt: "",
         })
     }
 
     const handleSave = async () => {
         try {
             const dataMap = {
-                classStudentId: data.classStudentId,
-                classStudentName: data.classStudentName
+                statusId: data.statusId,
+                statusName: data.statusName,
+                note: data.note,
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt
             }
             if (isNew) {
-                await fetch("https://localhost:44312/api/ClassStudent/insert-ClassStudent", {
+                await fetch("https://localhost:44312/api/StudyStatus/insert-StudyStatus", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -72,7 +83,7 @@ const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData, selectedClass
                         }
                     });
             } else {
-                await fetch("https://localhost:44312/api/ClassStudent/change-ClassStudent", {
+                await fetch("https://localhost:44312/api/StudyStatus/change-StudyStatus", {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -108,7 +119,7 @@ const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData, selectedClass
             >
                 <DialogTitle id="alert-dialog-title" sx={{ backgroundColor: "#3b556edb", color: "#fff", display: "flex", flexDirection: "row", justifyContent: "space-between" }}
                     onClick={handleClose}>
-                    <span>THÊM LỚP MỚI</span>
+                    <span>THÊM TÌNH TRẠNG HỌC MỚI</span>
                     <IconButton size='small' color='inherit'>
                         <Close />
                     </IconButton>
@@ -116,31 +127,45 @@ const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData, selectedClass
                 <DialogContent >
                     <Box sx={{ p: 2 }}>
                         <Grid container spacing={2}>
-                            <Grid item sm={6} xs={12}>
+                            <Grid item sm={4} xs={12}>
                                 <TextField
                                     fullWidth
                                     id="outlined-error"
-                                    label="Mã lớp"
+                                    label="Mã tình trạng học"
                                     size='small'
-                                    value={data.classStudentId}
+                                    value={data.statusId}
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                         setData((prev) => ({
                                             ...prev,
-                                            classStudentId: event.target.value
+                                            statusId: event.target.value
                                         }));
                                     }}
                                 />
                             </Grid>
-                            <Grid item sm={6} xs={12}>
+                            <Grid item sm={4} xs={12}>
                                 <TextField fullWidth
                                     size='small'
                                     id="outlined-error"
-                                    label="Tên lớp"
-                                    value={data.classStudentName}
+                                    label="Tên tình trạng học"
+                                    value={data.statusName}
                                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                         setData((prev) => ({
                                             ...prev,
-                                            classStudentName: event.target.value
+                                            statusName: event.target.value
+                                        }));
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item sm={4} xs={12}>
+                                <TextField fullWidth
+                                    size='small'
+                                    id="outlined-error"
+                                    label="Chú thích"
+                                    value={data.note}
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setData((prev) => ({
+                                            ...prev,
+                                            note: event.target.value
                                         }));
                                     }}
                                 />
@@ -159,4 +184,4 @@ const ClassModal: FC<ModalProps> = ({ open, handleClose, loadData, selectedClass
     );
 };
 
-export default ClassModal;
+export default StudyStatusModal;

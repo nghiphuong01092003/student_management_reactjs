@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import NavigationBar from './components/NavigationBar';
 import ContentColumn1 from './components/ContentColumn1';
-import ContentColumn2 from './components/ContentColumn2';
-import FormContainer from './components/FormContainer';
+import { createContext, useContext } from 'react';
 import Footer from './components/Footer';
 import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
+import AppUseContext from './ContextAPI/AppUseContext';
 
 interface ClassStudent {
   id: string;
@@ -47,14 +47,10 @@ const App: React.FC = () => {
         <div id="container">
           <ContentColumn1 />
         </div>
+
         {/* <FormContainer showForm={showForm} setShowForm={setShowForm} /> */}
         <Footer />
       </div> </>
   )
 };
-
-
-
-
-
 export default App;

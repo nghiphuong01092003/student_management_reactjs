@@ -1,9 +1,10 @@
 import { Link } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import LoadClassStudent, { classType } from "./Students/Class/LoadClassStudent";
 import Loadtudent from "./Students/Student/LoadStudent";
 import LoadStudyStatus from "./Students/StudyStatus/LoadStudyStatus";
 import { toast } from "react-toastify";
+import MyGlobalContext from "../ContextAPI/GlobalContext";
 
 const dataFake = [{
     value: 0,
@@ -34,6 +35,7 @@ type studentType = {
     updatedAt: string
 }
 type studyStatusType = {
+    id: string
     statusId: string,
     statusName: string,
     note: string,
@@ -46,6 +48,9 @@ const ContentColumn1 = () => {
     const [classStudentData, setClassStudentData] = useState<classType[]>([]);
     const [studentData, setStudentData] = useState<studentType[]>([]);
     const [studyStatusData, setStudyStatusData] = useState<studyStatusType[]>([]);
+    const copy = useContext(MyGlobalContext);
+
+    console.log(copy);
 
     useEffect(() => {
         if (type === 0) {
@@ -100,7 +105,7 @@ const ContentColumn1 = () => {
         } else if (type === 1) {
             return <Loadtudent data={studentData} />
         } else {
-            return <LoadStudyStatus data={studyStatusData} />
+            return <LoadStudyStatus data={studyStatusData} loadData={fetchStudyStatusData} />
         }
     }
 

@@ -1,8 +1,10 @@
 import { Button, IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClassModal from "./Modal/ClassModal";
+import ModalQuestion from "../../ModalQuestion";
+import { toast } from "react-toastify";
 
 export type classType = {
     id: string | null,
@@ -20,16 +22,24 @@ const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data, loadData }) =
     const [open, setOpen] = useState<boolean>(false);
     const [isNew, setIsNew] = useState<boolean>(false);
     const [selectedClassStudent, setSelectedClassStudent] = useState<classType | null>(null);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (selectedClassStudent !== null) {
+            console.log(selectedClassStudent);
+        }
+    }, [selectedClassStudent])
 
     const handleClickOpenForm = () => {
         setSelectedClassStudent(null);
-        setOpen(true)
+        setOpen(true);
         setIsNew(true);
     }
 
     const handleClose = () => {
-        setOpen(false)
-        setSelectedClassStudent(null)
+        setOpen(false);
+        setOpenDialog(false);
+        setSelectedClassStudent(null);
     }
 
     const handleEdit = (classStudent: classType) => {
@@ -37,34 +47,38 @@ const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data, loadData }) =
         setOpen(true);
         setIsNew(false);
     }
-
-    // const fetchChangeClassStudent = async () => {
-    //     if (!selectedClassStudent) return;
-    //     await fetch("https://localhost:44312/api/ClassStudent/change-ClassStudent", {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             selectedClassStudent
-    //         })
-    //     })
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             console.log(data);
-    //             if (data.status) {
-    //                 toast.success(data.message);
-    //                 loadData();
-    //                 handleClose()
-    //             } else {
-    //                 toast.error(data.message);
-    //             }
-    //         });
-    // }
-
-    const handleDelete = () => {
-
+    const handleDelete = (classStudent: classType) => {
+        setSelectedClassStudent(classStudent);
+        setOpenDialog(true);
     }
+    const handleConfirm = async () => {
+        if (!selectedClassStudent) return;
+        const { id, classStudentId, classStudentName } = selectedClassStudent;
+        try {
+            fetch("https://localhost:44312/api/ClassStudent/delete-ClassStudent", {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id, classStudentId, classStudentName
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status) {
+                        toast.success(data.message);
+                        loadData();
+                        handleClose();
+                    } else {
+                        toast.error(data.message);
+                    }
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <Button variant="contained" color="primary" onClick={handleClickOpenForm}>Thêm lớp mới</Button>
@@ -91,7 +105,7 @@ const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data, loadData }) =
                                 <IconButton aria-label="edit" onClick={() => handleEdit(classStudent)} size="large">
                                     <BorderColorRoundedIcon />
                                 </IconButton>
-                                <IconButton aria-label="delete" onClick={handleDelete} size="large">
+                                <IconButton aria-label="delete" onClick={() => handleDelete(classStudent)} size="large">
                                     <DeleteIcon />
                                 </IconButton>
                             </td>
@@ -100,6 +114,7 @@ const LoadClassStudent: React.FC<LoadClassStudentProps> = ({ data, loadData }) =
                 </tbody>
             </table>
             <ClassModal open={open} handleClose={handleClose} loadData={loadData} selectedClassStudent={selectedClassStudent} isNew={isNew} />
+            <ModalQuestion open={openDialog} handleClose={handleClose} content="Bạn có chắn chắn muốn xóa lớp này?" handleConfirm={handleConfirm} />
         </>
     );
 }

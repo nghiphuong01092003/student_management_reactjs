@@ -3,13 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import MyGlobalContext from './ContextAPI/GlobalContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <MyGlobalContext.Provider value={{ copy: "22222" }}>
+      <App />
+    </MyGlobalContext.Provider>
   </React.StrictMode>
 );
 
